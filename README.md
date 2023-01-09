@@ -24,7 +24,6 @@ Process to create your django graphql backend API.
 - Local admin interface access via : http://localhost:8000/admin/
 
 <br/>
-<br/>
 
 Related docs :
 
