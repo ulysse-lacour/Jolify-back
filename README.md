@@ -1,21 +1,21 @@
-# MÜSIK
-
-- [Django](#django-graphql-api)
-  - [Pipenv](#pipenv)
-  - [Django basic](#create-django-project-and-apps)
-  - [Django structure](#directoriesfiles-to-addmodify)
-  - [Database](#database)
-  - [Test project](#view-project)
-  - [Test graphiQL](#test-gql-request)
-  - [Gunicorn](#set-up-gunicorn)
-  - [Nginx](#set-up-nginx)
-  - [Bash & alias](#bash-scripts-and-alias)
-
-<br/>
-<br/>
+# JOLIFY-back
 
 Frontend : https://github.com/ulysse-lacour/Jolify-front
 
+<br/>
+
+- [Django](#django-graphql-api)
+- [Pipenv](#pipenv)
+- [Django basic](#create-django-project-and-apps)
+- [Django structure](#directoriesfiles-to-addmodify)
+- [Database](#database)
+- [Test project](#view-project)
+- [Test graphiQL](#test-gql-request)
+- [Gunicorn](#set-up-gunicorn)
+- [Nginx](#set-up-nginx)
+- [Bash & alias](#bash-scripts-and-alias)
+
+<br/>
 <br/>
 
 Process to create your django graphql backend API.
