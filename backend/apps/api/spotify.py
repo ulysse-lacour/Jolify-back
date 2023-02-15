@@ -2,8 +2,7 @@ import base64
 import re
 import requests
 import spotipy
-from django.http import HttpRequest
-from apps.models import User
+
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from datetime import timedelta, datetime
 from typing import Any, Dict, List
@@ -13,6 +12,7 @@ from django.http import HttpRequest
 from django.utils import timezone
 
 from apps.models import User
+
 
 class SpotifyAPI:
 
@@ -36,13 +36,13 @@ class SpotifyAPI:
             playlist_id=playlist_id,
             limit=limit_step,
             offset=offset
-            )
+        )
 
         for song in songs['items']:
             # RegEx manipulation to clean title of track
             title = re.sub("[\(\[].*?[\)\]]", "", song['track']['name'])  # pylint: disable=W1401
-            title = re.sub(r'\-.*',"",title)
-            title = re.sub(r'\|.*',"",title)
+            title = re.sub(r'\-.*', "", title)
+            title = re.sub(r'\|.*', "", title)
             # Get track data
             song_id = song['track']['id']
             artist = song['track']['artists'][0]['name']
@@ -60,7 +60,6 @@ class SpotifyAPI:
 
         last_page = songs['next'] is None
         return {"success": True, "tracks": tracks, "last_page": last_page}
-
 
     @staticmethod
     def get_user_playlists(
@@ -91,8 +90,9 @@ class SpotifyAPI:
         }
 
         for playlist in user_playlists['items']:
-            # make sure every playlist has an image, if one hasn't don't send it to front
-            if len(playlist['images']) < 1:
+            # TODO : fix that for image should be displayed a default if none is provided
+            # make sure every playlist has an image and a name, if one hasn't don't send it to front
+            if len(playlist['images']) < 1 or len(playlist['name']) < 1:
                 continue
 
             playlist_id = playlist['id']
@@ -112,8 +112,6 @@ class SpotifyAPI:
         last_page = user_playlists['next'] is None
 
         return {"success": True, "details": "Playlists successfuly fetched.", "owner": owner, "playlists": playlists, "last_page": last_page}
-
-
 
     @staticmethod
     def get_playlist_data(
@@ -157,14 +155,14 @@ class SpotifyAPI:
             playlist_id=playlist_id,
             limit=limit_step,
             offset=offset
-            )
+        )
 
         for song in songs['items']:
             if song['track']['duration_ms'] != 0:
                 # RegEx manipulation to clean title of track
                 title = re.sub("[\(\[].*?[\)\]]", "", song['track']['name'])  # pylint: disable=W1401
-                title = re.sub(r'\-.*',"",title)
-                title = re.sub(r'\|.*',"",title)
+                title = re.sub(r'\-.*', "", title)
+                title = re.sub(r'\|.*', "", title)
                 # Get track data
                 song_id = song['track']['id']
                 artist = song['track']['artists'][0]['name']
@@ -180,10 +178,8 @@ class SpotifyAPI:
                     "preview": preview,
                 })
 
-
         last_page = songs['next'] is None
         return {"success": True, "playlist": playlist_data, "tracks": tracks, "last_page": last_page}
-
 
     @staticmethod
     def get_spotify_oauth_link(
@@ -194,7 +190,7 @@ class SpotifyAPI:
 
         res = requests.get(
             "https://accounts.spotify.com/authorize?",
-            params= {
+            params={
                 "response_type": 'code',
                 "scope": scope,
                 "client_id": settings.SPOTIFY_APP_CLIENT_ID,
@@ -209,19 +205,19 @@ class SpotifyAPI:
 
         return {"success": True, "href": href}
 
-
     @staticmethod
     def refresh_token(
         refresh_token: str,
         context: HttpRequest,
     ) -> Dict[str, Any]:
 
-        encodedData = base64.b64encode(bytes(f"{settings.SPOTIFY_APP_CLIENT_ID}:{settings.SPOTIFY_APP_CLIENT_SECRET}", "ISO-8859-1")).decode("ascii")
+        encodedData = base64.b64encode(
+            bytes(f"{settings.SPOTIFY_APP_CLIENT_ID}:{settings.SPOTIFY_APP_CLIENT_SECRET}", "ISO-8859-1")).decode("ascii")
         credentials = f"{encodedData}"
 
         res = requests.post(
             "https://accounts.spotify.com/api/token?",
-            data= {
+            data={
                 "grant_type": "refresh_token",
                 "refresh_token": refresh_token,
             },
@@ -242,7 +238,6 @@ class SpotifyAPI:
         user.save(update_fields=['spotify_access_token', 'spotify_token_expires_at'])
 
         return {"access_token": res_data["access_token"]}
-
 
     @staticmethod
     def is_access_token_expired(

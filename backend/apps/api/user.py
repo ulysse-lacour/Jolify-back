@@ -71,12 +71,12 @@ class UserAPI:
                 # Email admin to ask for approval
                 try:
                     send_mail(
-                        'New subscription to Müsik app',
+                        'New subscription to Jolify app',
                         f"""
                         Username : {username}
                         User email : {email}
 
-                        To add the user to Müsik go to :
+                        To add the user to Jolify go to :
                         https://developer.spotify.com/dashboard/applications/fffe2eacff224b6d8e37291b4433a444/users
 
                         Once the user informations are added to Spotify dev space, activate his account at :
